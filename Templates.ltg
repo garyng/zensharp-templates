@@ -1,0 +1,103 @@
+﻿space ::= " "
+cursor ::= "$END$"
+cursorb ::= "(" cursor ")"
+// Resharper macros:
+identifier ::= <name default="$name$" macros = "suggestVariableName()">
+identifier2 ::= <name2 default="$name2$" macros = "suggestVariableName()">
+//
+// Types:
+//
+suggType ::= <type short="t" expand="$type$" macros = "complete()">
+
+// Primive types:
+maybeType  ::= type | "void"
+type       ::= generic | primType ("?"="?")? ("[]"=a)? | suggType
+primType   ::= string=s | byte=by | bool=b | "System.DateTime"=dt | decimal=dc | double=d | int=i | uint=ui | "System.Guid"=g | "System.Uri"=u | "System.Xml.Linq.XElement"=x |
+               object=o
+taskType   ::= "System.Threading.Tasks.Task"
+
+// Complex types:
+generic1 ::= (SCG "." ("IList"=l | "IEnumerable"="~")) "<" type ">"
+generic2 ::= (SCG "." ("SortedList"=sl | "IDictionary"=di)) "<" type ", " type ">"
+SCG      ::= "System.Collections.Generic"
+generic ::= generic1 | generic2
+
+
+access ::= (internal=i | public=p | private=_ | protected=P) space
+
+// Auto properties:
+property        ::= access ("abstract "=ap | "static "=P | "virtual "=vp | ""=p) type space identifier propertyBody cursor
+propertyBody    ::= "{ get;" propertySetAccessor " set; }"
+propertySetAccessor ::= "protected "="+P" | ""="+" | "private "
+
+// Methods:
+methodAttributes ::=
+    | "[NUnit.Framework.SetUpAttribute]"=su
+    | "[NUnit.Framework.OneTimeSetUpAttribute]"=otsu
+    | "[NUnit.Framework.OneTimeTearDownAttribute]"=ottd
+    | "[NUnit.Framework.TearDownAttribute]"=td
+    | "[NUnit.Framework.TestCaseAttribute]"=tc
+    | "[NUnit.Framework.TestAttribute]"=t
+//    | "[NUnit.Framework.TestFixtureSetUpAttribute]"=tfsu
+//    | "[NUnit.Framework.TestFixtureTearDownAttribute]"=tftd
+method_async ::= (methodAttributes)? access "async" space ("virtual "=vm | "abstract "=am | "static "=M | ""=m)   (taskType "<"=T type ">" | taskType ""=T) space identifier methodArgs methodBody
+method_generic ::= (methodAttributes)? access ("virtual "=vm | "abstract "=am | "static "=M | ""=m) (type | "void") space identifier methodArgs methodBody
+method ::= method_async | method_generic
+methodBody ::= " { " cursor " }"
+methodArgs ::=  "(" ((""="," | ""="(") arg)? ")"
+arg ::= primType " " identifier2
+
+// Consts:
+// const ::= access "const "=c primType space identifier "= """ identifier """;"
+const ::= access "const "=c primType space identifier "="="=" cursor ";"
+
+// Fields:
+field ::= access ("readonly "=r)? type space identifier ("="="=" identifier2 ";" | ";")
+
+// Classes:
+classAtributes ::= ("[NUnit.Framework.TestFixtureAttribute]" = tf)?
+class ::= classAtributes access ("sealed "=s)? ("class"=c | "static class"=C | "abstract class"=ac) space  classBody
+classBody ::= identifier (" : "=":" type)? "{" cursor "}"
+
+//Enums:
+enum ::= access space "enum"=e space identifier "{" cursor "}"
+
+scope "InCSharpClass" {
+  start    ::=  method | property | field | const | other
+
+  other ::=
+    | class
+	| ""=dbset "public DBSet<" identifier " > " identifier "s {get; set; }"
+  | enum
+// added enum in class
+}
+
+scope "InCSharpTypeAndNamespace" {
+  start ::=
+    | class
+    | interface
+    | enum
+
+  interface ::= access "interface"=i space classBody
+}
+
+scope "InCSharpInterface" {
+  start ::=
+    | type space identifier propertyBody cursor
+    | method
+    | property
+
+  propertyBody ::= "{ get; }" | "{ get; set; }"="+"
+  access ::= ""
+  methodBody ::= ";"
+}
+
+scope "InCSharpStruct" {
+ // start ::= ""
+}
+
+scope "InCSharpStatement" {
+  start ::=
+    | "if ("=ifr identifier " == null) return;"
+	| "Log."=l (Fatal=f | Information=i | Error=e | Trace=t | Debug=d | Verbose=v | Warning=w) "(""" cursor """);"
+}
