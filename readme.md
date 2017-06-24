@@ -31,11 +31,12 @@ Shortcut	|	Note
 >
 > ### Note
 >
-Symbol							|	Meaning
---------------------|---------
-`[]`								|	Optional
-<code>&#124;</code>	|	Or
-`<>`								|	Required
+> Symbol							|	Meaning
+> --------------------|---------
+> `[]`								|	Optional
+> <code>&#124;</code>	|	Or
+> `<>`								|	Required
+
 
 Shortcut	|	Expand To
 ----------|-----------
