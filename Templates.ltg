@@ -38,8 +38,6 @@ methodAttributes ::=
     | "[NUnit.Framework.TearDownAttribute]"=td
     | "[NUnit.Framework.TestCaseAttribute]"=tc
     | "[NUnit.Framework.TestAttribute]"=t
-//    | "[NUnit.Framework.TestFixtureSetUpAttribute]"=tfsu
-//    | "[NUnit.Framework.TestFixtureTearDownAttribute]"=tftd
 method_async ::= (methodAttributes)? access "async" space ("virtual "=vm | "abstract "=am | "static "=M | ""=m)   (taskType "<"=T type ">" | taskType ""=T) space identifier methodArgs methodBody
 method_generic ::= (methodAttributes)? access ("virtual "=vm | "abstract "=am | "static "=M | ""=m) (type | "void") space identifier methodArgs methodBody
 method ::= method_async | method_generic
@@ -69,7 +67,6 @@ scope "InCSharpClass" {
     | class
 	| ""=dbset "public DBSet<" identifier " > " identifier "s {get; set; }"
   | enum
-// added enum in class
 }
 
 scope "InCSharpTypeAndNamespace" {
