@@ -27,7 +27,7 @@ access ::= (internal=i | public=p | private=_ | protected=P) space
 
 // Auto properties:
 property        ::= access ("abstract "=ap | "static "=P | "virtual "=vp | ""=p) type space identifier propertyBody cursor
-propertyBody    ::= "{ get;" propertySetAccessor " set; }"
+propertyBody    ::= "{ get;" ("}"="-" | (propertySetAccessor " set; }"))
 propertySetAccessor ::= "protected "="+P" | ""="+" | "private "
 
 // Methods:
@@ -66,7 +66,7 @@ scope "InCSharpClass" {
   other ::=
     | class
 	| ""=dbset "public DBSet<" identifier " > " identifier "s {get; set; }"
-  | enum
+    | enum
 }
 
 scope "InCSharpTypeAndNamespace" {
