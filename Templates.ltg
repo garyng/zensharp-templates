@@ -97,4 +97,5 @@ scope "InCSharpStatement" {
   start ::=
     | "if ("=ifr identifier " == null) return;"
 	| "Log."=l (Fatal=f | Information=i | Error=e | Trace=t | Debug=d | Verbose=v | Warning=w) "(""" cursor """);"
+	| "Assert.That("cursor");"=at
 }
